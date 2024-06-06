@@ -1,4 +1,4 @@
-Player,Pos_x,Ht,Wt,Forty,Vertical,BenchReps,BroadJump,Cone,Shuttle,Year,Pfr_ID,AV,Team,Round,Pick,Unnamed: 0,Season,Tm,Age,Pos_y,Games_x,GamesSTD,RshTD,RecTD,PR TD,KR TD,FblTD,IntTD,OthTD,AllTD,2PM,2PA,D2P,XPM,XPA,FGM,FGA,Sfty,Pts,Pts/G,Games_y,TotalTDs
+Player,Pos_x,Ht,Wt,Forty,Vertical,BenchReps,BroadJump,Cone,Shuttle,Year,Pfr_ID,AV,Team,Round,Pick,Unnamed: 0,Season,Tm,Age,Pos_y,Games_x,GamesSTD,RshTD,RecTD,PR TD,KR TD,FblTD,IntTD,OthTD,AllTD,2PM,2PA,D2P,XPM,XPA,FGM,FGA,Sfty,Pts,Pts/G,Games_y,TotalTouchdowns
 John Abraham,OLB,76,252,4.55,,,,,,2000,AbraJo00,26.0,New York Jets,1.0,13.0,469,2013,ARI,35.0,ROLB,16.0,13.0,,,,,,,,,,,,,,,,1.0,2.0,0.1,16.0,0.0
 Shaun Alexander,RB,72,218,4.58,,,,,,2000,AlexSh00,26.0,Seattle Seahawks,1.0,19.0,190,2000,SEA,23.0,RB,16.0,1.0,2.0,,,,,,,2.0,,,,,,,,,12.0,0.8,103.0,84.0
 Shaun Alexander,RB,72,218,4.58,,,,,,2000,AlexSh00,26.0,Seattle Seahawks,1.0,19.0,19,2001,SEA,24.0,RB,16.0,12.0,14.0,2.0,,,,,,16.0,,,,,,,,,96.0,6.0,103.0,84.0

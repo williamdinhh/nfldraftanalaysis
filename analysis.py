@@ -54,12 +54,8 @@ def load_data(combine_data, player_stats):
     final_combined_data = pd.merge(final_combined_data, total_stats_by_player[['Player', 'Games', 'TotalTouchdowns']],
                                    on='Player', how='left')
 
-    # Rename columns
-    final_combined_data.rename(columns={'Games': 'TotalGames',
-                                        'TotalTouchdowns': 'TotalTDs'}, inplace=True)
-
     return final_combined_data
-
+    # note: remove quarterbacks and other irrelevant data. 
 
 def scatter_plot(data):
     """scatter plot of draft position vs career length by total games played
