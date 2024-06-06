@@ -1,4 +1,4 @@
-,Season,Player,Tm,Age,Pos,G,GS,RshTD,RecTD,PR TD,KR TD,FblTD,IntTD,OthTD,AllTD,2PM,2PA,D2P,XPM,XPA,FGM,FGA,Sfty,Pts,Pts/G
+,Season,Player,Tm,Age,Pos,Games,GamesSTD,RshTD,RecTD,PR TD,KR TD,FblTD,IntTD,OthTD,AllTD,2PM,2PA,D2P,XPM,XPA,FGM,FGA,Sfty,Pts,Pts/G
 0,1922,Hank Gillo,RAC,28.0,FB,11.0,10.0,5.0,,,,,,,5.0,,,,4.0,,6.0,,,52.0,4.7
 1,1922,Jimmy Conzelman,2TM,24.0,BB,10.0,9.0,7.0,,,,,,,7.0,,,0.0,,,2.0,,,48.0,4.8
 2,1922,Guy Chamberlin,CAN,28.0,LE,12.0,11.0,3.0,1.0,,,,2.0,1.0,7.0,,,,,,,,,42.0,3.5
