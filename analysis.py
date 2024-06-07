@@ -25,11 +25,9 @@ def load_data(combine_data, player_stats):
 
     Note: Games_y is total games played, Games_x is games per season 
     """
-    # Load the datasets
     combine_stats = pd.read_csv(combine_data)
     player_data = pd.read_csv(player_stats)
 
-    # Merge datasets for easier data analysis
     # use inner merge so same values across all 3 datasets are consistent.
     final_combined_data = pd.merge(combine_stats,
                                    player_data,
@@ -37,25 +35,29 @@ def load_data(combine_data, player_stats):
                                    right_on='Player',
                                    how='inner')
 
-    # Remove rows with NaN values
+    # remove qbs since we're not going to be looking at passing metrics
+    mask = (final_combined_data['Pos_x'] != 'QB') & (final_combined_data['Pos_y'] != 'QB')
+    final_combined_data = final_combined_data.loc[mask]
+
+    # remove rows with NaN values
     final_combined_data.dropna()
 
-    # Group by player name and sum up the total games and touchdowns
+    # group by player name and sum up the total games and touchdowns
     total_stats_by_player = final_combined_data.groupby('Player').agg({
         'Games': 'sum',
         'RecTD': 'sum',
         'RshTD': 'sum'
     }).reset_index()
 
-    # Calculate total touchdowns
+    # calculate total touchdowns
     total_stats_by_player['TotalTouchdowns'] = total_stats_by_player['RecTD'] + total_stats_by_player['RshTD']
 
-    # Merge total games and total touchdowns back into final_combined_data
+    # merge total games and total touchdowns back into final_combined_data
     final_combined_data = pd.merge(final_combined_data, total_stats_by_player[['Player', 'Games', 'TotalTouchdowns']],
                                    on='Player', how='left')
 
     return final_combined_data
-    # note: remove quarterbacks and other irrelevant data. 
+
 
 def scatter_plot(data):
     """scatter plot of draft position vs career length by total games played
@@ -122,7 +124,7 @@ def analyze_combine_stats(data):
     """
     combine_columns = ['Forty', 'Vertical', 'BenchReps',
                        'BroadJump', 'Cone', 'Shuttle']
-    performance_columns = ['Games_y', 'RshTD', 'RecTD', 'TotalTDs']
+    performance_columns = ['Games_y', 'RshTD', 'RecTD', 'TotalTouchdowns']
 
     correlations = data[combine_columns + performance_columns].corr()
 
