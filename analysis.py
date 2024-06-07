@@ -11,8 +11,6 @@ import numpy as np
 
 from data_loader import load_data
 
-
-# machine learning and model accuracy testing
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -149,7 +147,9 @@ def machine_learning_model_career_success_total_games(data):
     plt.figure(figsize=(10, 6))
     sns.barplot(x='importance', y='feature',
                 data=feature_importance)
-    plt.title('Combine Drill vs Pick Importance')
+    plt.title('Combine Drill vs Total Career Games Played Importance')
+    plt.xlabel("Total Career Games Played Importance")
+    plt.ylabel("Drill")
     plt.savefig("pngs//DrillPickImportance.png")
     # plt.show()
 
@@ -202,6 +202,8 @@ def machine_learning_model_career_success_AV(data):
     sns.barplot(x='importance', y='feature',
                 data=feature_importance)
     plt.title('Combine Drill vs AV Importance')
+    plt.xlabel("AV Importance")
+    plt.ylabel("Drill")
     plt.savefig("pngs//AVPickImportance.png")
 
 
