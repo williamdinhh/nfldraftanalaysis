@@ -1,62 +1,22 @@
 """
-
+Ian Kraemer and William Dinh
+CSE 163 Final Project
 """
 
 # import statements
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+
+from data_loader import load_data
+
 
 # machine learning and model accuracy testing
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
-
-
-def load_data(combine_data, player_stats):
-    """Load and merge NFL datasets.
-
-    Args:
-        combine_data (str): Path to the combine data CSV file.
-        player_stats (str): Path to the player stats CSV file.
-
-    Returns:
-        pd.DataFrame: Merged DataFrame of all datasets
-
-    Note: Games_y is total games played, Games_x is games per season 
-    """
-    combine_stats = pd.read_csv(combine_data)
-    player_data = pd.read_csv(player_stats)
-
-    # use inner merge so same values across all 3 datasets are consistent.
-    final_combined_data = pd.merge(combine_stats,
-                                   player_data,
-                                   left_on='Player',
-                                   right_on='Player',
-                                   how='inner')
-
-    # remove qbs since we're not going to be looking at passing metrics
-    mask = (final_combined_data['Pos_x'] != 'QB') & (final_combined_data['Pos_y'] != 'QB')
-    final_combined_data = final_combined_data.loc[mask]
-
-    # remove rows with NaN values
-    final_combined_data.dropna()
-
-    # group by player name and sum up the total games and touchdowns
-    total_stats_by_player = final_combined_data.groupby('Player').agg({
-        'Games': 'sum',
-        'RecTD': 'sum',
-        'RshTD': 'sum'
-    }).reset_index()
-
-    # calculate total touchdowns
-    total_stats_by_player['TotalTouchdowns'] = total_stats_by_player['RecTD'] + total_stats_by_player['RshTD']
-
-    # merge total games and total touchdowns back into final_combined_data
-    final_combined_data = pd.merge(final_combined_data, total_stats_by_player[['Player', 'Games', 'TotalTouchdowns']],
-                                   on='Player', how='left')
-
-    return final_combined_data
+from sklearn.metrics import r2_score
 
 
 def scatter_plot(data):
@@ -65,14 +25,16 @@ def scatter_plot(data):
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
-    correlation_draft_career = data['Pick'].corr(data['Games_y'])
-    print(f'Correlation between draft position and career length: {correlation_draft_career:.2f}')
+    draft_car = data['Pick'].corr(data['Games_y'])
+    print(
+        f'Correlation between draft position & career length: {draft_car:.2f}')
     plt.figure(figsize=(10, 6))
     plt.scatter(data['Pick'], data['Games_y'], alpha=0.5)
     plt.title('Draft Position vs. Career Length')
     plt.xlabel('Draft Position')
     plt.ylabel('Career Length (Games) Played')
-    plt.savefig("pngs//Draft Position vs. Career Longevity and Performance.png")
+    plt.savefig(
+        "pngs//Draft Position vs. Career Longevity and Performance.png")
     # plt.show()
 
 
@@ -85,8 +47,9 @@ def scatter_plot_av(data):
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
-    correlation_draft_career = data['Pick'].corr(data['AV'])
-    print(f'Correlation between draft position and AV: {correlation_draft_career:.2f}')
+    draft_av = data['Pick'].corr(data['AV'])
+    print(
+        f'Correlation between draft position and AV: {draft_av:.2f}')
     plt.figure(figsize=(10, 6))
     plt.scatter(data['Pick'], data['AV'], alpha=0.5)
     plt.title('Draft Position vs. AV')
@@ -122,66 +85,63 @@ def analyze_combine_stats(data):
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
-    combine_columns = ['Forty', 'Vertical', 'BenchReps',
+    combine_columns = ['Forty', 'Vertical', 'Ht', 'Wt',
                        'BroadJump', 'Cone', 'Shuttle']
-    performance_columns = ['Games_y', 'RshTD', 'RecTD', 'TotalTouchdowns']
+    performance_columns = ['Games_y', 'RshTD', 'RecTD',
+                           'TotalTouchdowns', 'AV']
 
     correlations = data[combine_columns + performance_columns].corr()
 
     plt.figure(figsize=(16, 12))
     sns.heatmap(correlations, annot=True, cmap='coolwarm', fmt='.2f')
     plt.title('Combine Stats and Career Performance Correlation Matrix')
-    plt.savefig("pngs//Combine Stats and Career Performance Correlation Matrix.png")
-    # plt.show()
-
-
-def analyze_combine_stats_av(data):
-    """_summary_
-
-    Args:
-        data (_type_): _description_
-    """
-    combine_columns = ['Forty', 'Vertical', 'BenchReps',
-                       'BroadJump', 'Cone', 'Shuttle']
-    performance_columns = ['AV']
-
-    correlations = data[combine_columns + performance_columns].corr()
-
-    plt.figure(figsize=(16, 12))
-    sns.heatmap(correlations, annot=True, cmap='coolwarm', fmt='.2f')
-    plt.title('Combine Stats and AV Correlation Matrix')
-    plt.savefig("pngs//Combine Stats and AV Correlation Matrix.png")
+    plt.savefig(
+        "pngs//Combine Stats and Career Performance Correlation Matrix.png")
     # plt.show()
 
 
 def machine_learning_model_career_success_total_games(data):
     """Build a predictive model to predict career success based
-    on combine stats and draft position.
+    on combine stats and draft position using Random Forest Regressor.
 
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
-    features = ['Forty', 'Vertical', 'BenchReps',
+    features = ['Forty', 'Vertical', 'BenchReps', 'Ht', 'Wt',
                 'BroadJump', 'Cone', 'Shuttle']
-    target = 'Pick'
+    target = 'Games_y'
 
-    # Drop rows with NaN values in the target variable since it was getting
-    # angry bc not all of the data is actually present
+    # drop rows with NaN values in the target variable
     data = data.dropna(subset=[target])
 
     X_train, X_test, y_train, y_test = train_test_split(data[features],
                                                         data[target],
-                                                        test_size=0.2)
+                                                        test_size=0.2
+                                                        )
 
-    model = DecisionTreeRegressor()
+    model = RandomForestRegressor(n_estimators=200)
+
+    # train the model + predict
     model.fit(X_train, y_train)
-
     y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
-    print(f'Mean Squared Error: {mse:.2f}')
 
-    feature_importance = pd.DataFrame({'feature': features,
-                                       'importance': model.feature_importances_})
+    # calculate Mean Squared Error
+    mse = mean_squared_error(y_test, y_pred)
+    print(
+        f'Mean Squared Error of target, Total Games Played: {mse:.2f}')
+
+    # calculate variance of the target variable 'total games played'
+    variance = np.var(data[target])
+    print(
+        f'Variance of target, Total Games Played: {variance:.2f}')
+
+    # calculate r squared value
+    r2 = r2_score(y_test, y_pred)
+    print(f'R^2 Score: {r2:.2f}')
+
+    feature_importance = pd.DataFrame(
+        {'feature': features,
+         'importance': model.feature_importances_})
 
     feature_importance = feature_importance.sort_values(by='importance',
                                                         ascending=False)
@@ -200,28 +160,40 @@ def machine_learning_model_career_success_AV(data):
 
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
+
+    Returns:
+        mse (float): Mean squared error of the model predictions.
+        variance_AV (float): Variance of the target variable 'AV'.
     """
-    features = ['Forty', 'Vertical', 'BenchReps',
+    features = ['Forty', 'Vertical', 'BenchReps', 'Ht', 'Wt',
                 'BroadJump', 'Cone', 'Shuttle']
     target = 'AV'
 
-    # Drop rows with NaN values in the target variable since it was getting
-    # angry bc not all of the data is actually present
+    # drop rows with NaN values in the target variable
     data = data.dropna(subset=[target])
 
     X_train, X_test, y_train, y_test = train_test_split(data[features],
                                                         data[target],
                                                         test_size=0.2)
 
-    model = DecisionTreeRegressor()
+    model = RandomForestRegressor(n_estimators=200)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
-    print(f'Mean Squared Error: {mse:.2f}')
+    print(f'Mean Squared Error of target, AV: {mse:.2f}')
 
-    feature_importance = pd.DataFrame({'feature': features,
-                                       'importance': model.feature_importances_})
+    # calculate variance of the target variable 'AV'
+    variance_AV = np.var(data[target])
+    print(f'Variance of Target AV: {variance_AV:.2f}')
+
+    # calculate r squared value
+    r2 = r2_score(y_test, y_pred)
+    print(f'R^2 Score: {r2:.2f}')
+
+    feature_importance = pd.DataFrame(
+        {'feature': features,
+         'importance': model.feature_importances_})
 
     feature_importance = feature_importance.sort_values(by='importance',
                                                         ascending=False)
@@ -231,7 +203,6 @@ def machine_learning_model_career_success_AV(data):
                 data=feature_importance)
     plt.title('Combine Drill vs AV Importance')
     plt.savefig("pngs//AVPickImportance.png")
-    # plt.show()
 
 
 def main():
@@ -251,7 +222,6 @@ def main():
     scatter_plot_av(nfl_data)
     draft_performance_by_team_av(nfl_data)
     analyze_combine_stats(nfl_data)
-    analyze_combine_stats_av(nfl_data)
     machine_learning_model_career_success_total_games(nfl_data)
     machine_learning_model_career_success_AV(nfl_data)
 
