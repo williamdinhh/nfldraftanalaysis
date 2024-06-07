@@ -26,10 +26,19 @@ def scatter_plot(data):
     draft_car = data['Pick'].corr(data['Games_y'])
     print(
         f'Correlation between draft position & career length: {draft_car:.2f}')
+
     plt.figure(figsize=(10, 6))
+
     plt.scatter(data['Pick'], data['Games_y'], alpha=0.5)
+
+    # Adding horizontal lines at y = 16, y = 32, y = 48 (1-3 seasons)
+    plt.axhline(y=16, color='r', linestyle='--', label='16 Games (1 season)')
+    plt.axhline(y=32, color='g', linestyle='--', label='32 Games (2 seasons)')
+    plt.axhline(y=48, color='b', linestyle='--', label='48 Games (3 seasons)')
+
     plt.title('Draft Position vs. Career Length')
     plt.xlabel('Draft Position')
+    plt.legend()
     plt.ylabel('Career Length (Games) Played')
     plt.savefig(
         "pngs//Draft Position vs. Career Longevity and Performance.png")
@@ -50,6 +59,7 @@ def scatter_plot_av(data):
         f'Correlation between draft position and AV: {draft_av:.2f}')
     plt.figure(figsize=(10, 6))
     plt.scatter(data['Pick'], data['AV'], alpha=0.5)
+
     plt.title('Draft Position vs. AV')
     plt.xlabel('Draft Position')
     plt.ylabel('AV')
