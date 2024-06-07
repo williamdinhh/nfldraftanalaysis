@@ -3,8 +3,10 @@ CSE 163 Final Project
 William Dinh & Ian Kraemer
 
 Before we begin, please download the following datasets from Kaggle.
+
 All Time NFL Combine Stats Data
 https://www.kaggle.com/datasets/savvastj/nfl-combine-data/data 
+
 NFL Career Stats & Total Games:
 https://www.kaggle.com/datasets/loganlauton/nfl-player-data
 
