@@ -4,12 +4,12 @@ CSE 163 Final Project
 """
 
 # import statements
+from data_loader import load_data
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-
-from data_loader import load_data
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
