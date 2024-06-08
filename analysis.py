@@ -235,7 +235,7 @@ def main():
     """
     nfl_data = load_data(
         'combine_data_since_2000_PROCESSED_2018-04-26.csv',
-        'NFL Player Stats(92 - 22).csv'
+        'NFL Player Stats(1992 - 2022).csv'
     )
 
     # check if everything looks good here (it does)
