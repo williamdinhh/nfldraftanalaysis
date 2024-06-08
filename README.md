@@ -21,4 +21,4 @@ MatPlotLib
 Numpy
 Sklearn
 
-Once all of these are downloaded, you are able to run the code, and the graphs will show up properly in the png folder.
+Once all of these are downloaded, you are able to run the code through the "analysis.py" module, and the graphs will show up properly in the png folder.
