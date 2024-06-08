@@ -2,6 +2,11 @@
 CSE 163 Final Project
 William Dinh & Ian Kraemer
 
+If you decide to use the datasets that are already in our repo, feel free to extract the files (if needed), and run the code by navigating to the 
+analysis.py, and clicking run. The data visualizions will pop up in the pngs folder, given you want to make changes to the code/images. 
+
+If you decide not to download the datasets that will be zipped once cloning or downloading this repository, please refer to the followning below.
+
 Before we begin, please download the following datasets from Kaggle.
 
 All Time NFL Combine Stats Data
