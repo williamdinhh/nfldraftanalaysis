@@ -3,17 +3,22 @@ Ian Kraemer and William Dinh
 CSE 163 Final Project
 """
 
-# import statements
+# import data from data_loader.py
 from data_loader import load_data
 
+# create plots, modify/create filters, etc...
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
+# machine learning model stuff
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
+
+# imports for statistical analysis so we don't have to crank
+# those by hand since its pretty tedious
+from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 
 
@@ -24,6 +29,7 @@ def scatter_plot(data):
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
     draft_car = data['Pick'].corr(data['Games_y'])
+    # print out the correlation so we can analyze the numbers as well
     print(
         f'Correlation between draft position & career length: {draft_car:.2f}')
 
@@ -31,7 +37,8 @@ def scatter_plot(data):
 
     plt.scatter(data['Pick'], data['Games_y'], alpha=0.5)
 
-    # Adding horizontal lines at y = 16, y = 32, y = 48 (1-3 seasons)
+    # adding horizontal lines at y = 16, y = 32, y = 48 (1-3 seasons)
+    # this is so that we can better see the majoritiy of rookeis in their szns
     plt.axhline(y=16, color='r', linestyle='--', label='16 Games (1 season)')
     plt.axhline(y=32, color='g', linestyle='--', label='32 Games (2 seasons)')
     plt.axhline(y=48, color='b', linestyle='--', label='48 Games (3 seasons)')
@@ -55,6 +62,7 @@ def scatter_plot_av(data):
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
     draft_av = data['Pick'].corr(data['AV'])
+    # print out the correlation so we can analyze the numbers as well
     print(
         f'Correlation between draft position and AV: {draft_av:.2f}')
     plt.figure(figsize=(10, 6))
@@ -70,13 +78,14 @@ def scatter_plot_av(data):
 def draft_performance_by_team_av(data):
     """analysis of draft performance among teams by AV
 
-    Created by PFR founder Doug Drinen, the Approximate Value (AV)
+    created by PFR founder Doug Drinen, the Approximate Value (AV)
     method is an attempt to put a single number on the seasonal value
     of a player at any position from any year (since 1960).
 
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
+    # sort value such that the best are on the top
     team_av = data.groupby('Team')['AV'].mean().sort_values(ascending=False)
     plt.figure(figsize=(18, 8))
     sns.barplot(x=team_av.values, y=team_av.index, legend=False)
@@ -93,6 +102,8 @@ def analyze_combine_stats(data):
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
     """
+    # identify combine columns in data, and what performance metrics we
+    # want to show in the matrix/heatmap
     combine_columns = ['Forty', 'Vertical', 'Ht', 'Wt',
                        'BroadJump', 'Cone', 'Shuttle']
     performance_columns = ['Games_y', 'RshTD', 'RecTD',
@@ -101,6 +112,7 @@ def analyze_combine_stats(data):
     correlations = data[combine_columns + performance_columns].corr()
 
     plt.figure(figsize=(16, 12))
+    # annotate each cell, set the color to cool/warm
     sns.heatmap(correlations, annot=True, cmap='coolwarm', fmt='.2f')
     plt.title('Combine Stats and Career Performance Correlation Matrix')
     plt.savefig(
@@ -166,8 +178,7 @@ def machine_learning_model_career_success_total_games(data):
 
 def machine_learning_model_career_success_AV(data):
     """Build a predictive model to predict career success based
-    on combine stats and draft position.
-
+    on combine stats and AV
     Args:
         data (pd.DataFrame): Merged DataFrame of NFL datasets.
 
@@ -227,7 +238,7 @@ def main():
         'NFL Player Stats(92 - 22).csv'
     )
 
-    # check if everything looks good here
+    # check if everything looks good here (it does)
     nfl_data.to_csv('merged_nfl_data.csv', index=False)
 
     scatter_plot(nfl_data)
